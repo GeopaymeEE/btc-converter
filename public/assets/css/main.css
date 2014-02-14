@@ -1,0 +1,110 @@
+/** Main SASS file. */
+* {
+  box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Roboto", Arial, sans-serif;
+  background: #fafafa;
+  width: 100%;
+  height: 100%;
+  line-height: 1.5em;
+  font-size: 16px;
+  color: #333; }
+
+h1, h2, h3, h4, h5, h6, h7 {
+  font-weight: 500; }
+
+a {
+  color: #79b5a9;
+  text-decoration: none; }
+  a:hover {
+    text-decoration: underline; }
+
+strong, b {
+  font-weight: 500; }
+
+.cf {
+  *zoom: 1; }
+  .cf:after, .cf:before {
+    content: " ";
+    display: table; }
+  .cf:after {
+    clear: both; }
+
+.input-container {
+  margin: 15px 0; }
+
+input {
+  padding: 7px 9px;
+  font-size: 14px;
+  border: 1px solid #AAA; }
+  input.full {
+    width: 100%; }
+
+.pull-right {
+  float: right; }
+
+.btn-container {
+  margin: 30px 0; }
+
+.btn {
+  text-transform: uppercase;
+  display: inline-block;
+  border: 1px solid #3e8879;
+  text-shadow: 0 1px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  background: #5db5a4;
+  color: white;
+  padding: 3px 7px;
+  border-radius: 2px;
+  font-size: 13px;
+  font-weight: 500; }
+  .btn:hover {
+    background: #4ba492;
+    border: 1px solid #3b8173;
+    text-decoration: none; }
+  .btn.fat {
+    width: 380px;
+    padding: 30px;
+    text-align: center; }
+    .btn.fat:first-of-type {
+      margin-right: 20px; }
+
+select {
+  margin: 0 3px; }
+
+header {
+  background: #5db5a4;
+  border-bottom: 1px solid #469989;
+  color: white;
+  padding: 15px 0; }
+  header #title {
+    margin: 0;
+    font-size: 26px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.33); }
+
+.container {
+  width: 600px;
+  margin: 0 auto; }
+
+#btc-converter {
+  padding-top: 45px; }
+
+#amt-container {
+  position: relative; }
+  #amt-container #opp-currency {
+    font-weight: 500;
+    position: absolute;
+    right: -40px;
+    top: 5px; }
+
+#oh-no {
+  display: none; }
+
+#quote-container {
+  display: none; }
+
+.error {
+  color: #ed4738;
+  font-size: 14px; }

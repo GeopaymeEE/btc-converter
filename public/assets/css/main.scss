@@ -1,0 +1,147 @@
+/** Main SASS file. */
+
+$teal: #5DB5A4;
+$light-teal: #79B5A9;
+$near-white: #FAFAFA;
+$error: #ED4738;
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Roboto", Arial, sans-serif;
+  background: $near-white;
+  width: 100%;
+  height: 100%;
+  line-height: 1.5em;
+  font-size: 16px;
+  color: #333;
+}
+
+h1, h2, h3, h4, h5, h6, h7 {
+  font-weight: 500;
+}
+
+a {
+  color: $light-teal;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+strong, b {
+  font-weight: 500;
+}
+
+// Clearfix
+.cf {
+  *zoom: 1; // IE6/7
+  &:after, &:before {
+    content: " ";
+    display: table;
+  }
+  &:after { clear: both; }
+}
+
+.input-container {
+  margin: 15px 0;
+}
+
+input {
+  padding: 7px 9px;
+  font-size: 14px;
+  border: 1px solid #AAA;
+
+  &.full {
+    width: 100%;
+  }
+}
+
+.pull-right { float: right; }
+
+.btn-container {
+  margin: 30px 0;
+}
+
+.btn {
+  text-transform: uppercase;
+  display: inline-block;
+  border: 1px solid darken($teal, 15%);
+  text-shadow: 0 1px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  background: $teal;
+  color: white;
+  padding: 3px 7px;
+  border-radius: 2px;
+  font-size: 13px;
+  font-weight: 500;
+
+  &:hover {
+    background: darken($teal, 7%);
+    border: 1px solid darken($teal, 17%);
+    text-decoration: none;
+  }
+
+  &.fat {
+    width: 380px;
+    padding: 30px;
+    text-align: center;
+
+    &:first-of-type {
+      margin-right: 20px;
+    }
+  }
+}
+
+select {
+  margin: 0 3px;
+}
+
+header {
+  background: $teal;
+  border-bottom: 1px solid darken($teal, 10%);
+  color: white;
+  padding: 15px 0;
+
+  #title {
+    margin: 0;
+    font-size: 26px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.33);
+  }
+}
+
+// Defines width of page
+.container {
+  width: 600px;
+  margin: 0 auto;
+}
+
+#btc-converter {
+  padding-top: 45px;
+}
+
+#amt-container {
+  position: relative;
+
+  #opp-currency {
+    font-weight: 500;
+    position: absolute;
+    right: -40px;
+    top: 5px;
+  }
+}
+
+#oh-no {
+  display: none;
+}
+
+#quote-container {
+  display: none;
+}
+
+.error {
+  color: $error;
+  font-size: 14px;
+}
