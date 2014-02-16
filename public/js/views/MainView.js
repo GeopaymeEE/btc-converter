@@ -16,12 +16,8 @@ define([
     'currencySelect': '#currency',
     'currencyText': '#opp-currency',
     'quoteContainer': '#quote-container',
-    'priceToText': '#price-to',
-    'priceFromText': '#price-from',
-    'commissionText': '#commission',
-    'currencyToText': '.currency-to',
-    'currencyFromText': '#currency-from',
-    'progressText': '#progress'
+    'progressText': '#progress',
+    'quoteText': '#quote-text'
   };
 
   /** Main View for the BTC converter app. */
@@ -42,8 +38,11 @@ define([
     onClickQuoteBtn: function(e) {
       var amount = $(elems['amountInput']).val();
 
-      if (!this.isNumeric(amount)) {
+      if (!this.isNumeric(amount) || amount < 0) {
         this.alertUser("That's not a number – try again with a number!");
+        return false;
+      } else if (amount <= 0) {
+        this.alertUser("Please enter in a positive number.");
         return false;
       } else {
         this.hideAlert();
@@ -71,13 +70,25 @@ define([
     /** Called when the user's quote gets saved/processed. */
     onChangeQuote: function(model, quote) {
       this.setProgress(false);
-      $(elems['priceToText']).html(Number(quote.amount + quote.commission).toFixed(4));
-      $(elems['priceFromText']).html(Number(quote.origAmount).toFixed(2));
-      $(elems['commissionText']).html(Number(quote.commission).toFixed(4));
-      $(elems['currencyToText']).html(quote.currency);
-      $(elems['currencyFromText']).html(
-        (quote.currency == 'USD') ? 'BTC' : 'USD');
-      $(elems['quoteContainer']).show();
+      if (quote.type == 'buy') {
+        $(elems['quoteText']).html("The current price is "
+          + Number(quote.total).toFixed(4) + " "
+          + quote.currency
+          + " (including " + Number(quote.commission).toFixed(4)
+          + " " + quote.currency + " for commission) for your "
+          + Number(quote.origAmount).toFixed(2)
+          + " " + ((quote.currency == 'USD') ? 'BTC' : 'USD') + ".");
+        $(elems['quoteContainer']).show();
+      } else {
+        $(elems['quoteText']).html("The current price is "
+          + Number(quote.total).toFixed(4) + " "
+          + ((quote.currency == 'USD') ? 'BTC' : 'USD')
+          + " (including " + Number(quote.commission).toFixed(4)
+          + " " + quote.currency + " for commission) for your "
+          + Number(quote.origAmount).toFixed(2)
+          + " " + quote.currency + ".");
+        $(elems['quoteContainer']).show();
+      }
     },
 
     /** Says 'working on it' or doesn't. */
@@ -95,6 +106,8 @@ define([
 
       if (!this.isNumeric(amount)) {
         this.alertUser("That's not a number – try again with a number!");
+      } else if (amount <= 0) {
+        this.alertUser("Please enter in a positive number.");
       } else {
         this.hideAlert();
         var type = this.getOrderType();

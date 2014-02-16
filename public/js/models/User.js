@@ -7,13 +7,12 @@ define(['backbone', 'underscore'], function(Backbone, _) {
     defaults: {
       name: "DENNIS ZHAO",
       orderBook: null,
-      quote: null
+      quote: null,
+      currPrice: null
     },
 
     /** Maybe pre-fetch the current BTC Price? Maybe not?... */
     initialize: function() {
-      // this.getBTCPrice();
-      // this.getOrderBook();
     },
 
     /** Makes a request to get current Bitcoin prices.
@@ -26,9 +25,10 @@ define(['backbone', 'underscore'], function(Backbone, _) {
         dataType: 'json'
       })
       .done(function(res) {
-        // console.log(res);
+        self.set('currPrice', res.ask);
       })
       .error(function(res) {
+        console.log(res);
         self.trigger('error:price');
       });
     },
@@ -46,6 +46,7 @@ define(['backbone', 'underscore'], function(Backbone, _) {
         self.trigger('bookReceived');
       })
       .error(function(res) {
+        console.log(res);
         self.trigger('error:book');
       });
     },
@@ -70,7 +71,6 @@ define(['backbone', 'underscore'], function(Backbone, _) {
 
       // Decrement this # until 0
       var amount = order.amount;
-      console.log(amount);
       var result = {
         amount: 0,
         origAmount: order.amount,
@@ -81,36 +81,26 @@ define(['backbone', 'underscore'], function(Backbone, _) {
       var iter = 0;
       if (order.type == 'buy') {
         if (order.currency == 'USD') {
-          // Wants to BUY USD with BTC
-
-          // Continue until amount == 0
           while (amount > 0) {
             var currAmount = Number(asks[iter][1]);
             var currValue = Number(asks[iter][0]);
             if (currAmount >= amount) {
-              // Multiply by amount, add to total
               result.amount += amount * currValue;
               break;
             } else {
-              // currAmount < amount
               result.amount += currAmount * currValue;
               amount -= currAmount;
             }
             console.log(result.amount);
           }
         } else if (order.currency == 'BTC') {
-          // Wants to BUY BTC with USD
-
-          // Continue until amount == 0
           while (amount > 0) {
             var currAmount = Number(asks[iter][0]);
             var currValue = Number(asks[iter][1]);
             if (currAmount >= amount) {
-              // Multiply by amount, add to total
               result.amount += currValue * (amount / currAmount);
               break;
             } else {
-              // currAmount < amount
               result.amount += currValue;
               amount -= currAmount;
             }
@@ -120,17 +110,40 @@ define(['backbone', 'underscore'], function(Backbone, _) {
         }
       } else if (order.type == 'sell') {
         if (order.currency == 'USD') {
-
+          while (amount > 0) {
+            var currAmount = Number(asks[iter][0]);
+            var currValue = Number(asks[iter][1]);
+            if (currAmount >= amount) {
+              result.amount += currValue * (amount / currAmount);
+              break;
+            } else {
+              result.amount += currValue;
+              amount -= currAmount;
+            }
+          }
         } else if (order.currency == 'BTC') {
-
+          while (amount > 0) {
+            var currAmount = Number(asks[iter][1]);
+            var currValue = Number(asks[iter][0]);
+            if (currAmount >= amount) {
+              result.amount += amount * currValue;
+              break;
+            } else {
+              result.amount += currAmount * currValue;
+              amount -= currAmount;
+            }
+            console.log(result.amount);
+          }
         } else {
           this.trigger('error:order');
         }
       } else {
         this.trigger('error:order');
       }
-      // Add commission
+
       result.commission = result.amount * 0.01;
+      result.total = result.amount + result.commission;
+
       this.set('quote', result);
     }
   });

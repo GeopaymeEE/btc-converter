@@ -13,12 +13,13 @@
     <option value="USD">USD</option>
   </select>
   </label>
-  <span>with</span>
+  <span>with/for</span>
+  <span id="opp-currency">USD</span>
 </div>
 
 <div id="amt-container" class="input-container">
+  <label for="amt">I have:</label>
   <input id="amt" type="text" placeholder="Amount" class="full" />
-  <span id="opp-currency">USD</span>
 </div>
 
 <div class="btn-container cf">
@@ -28,5 +29,5 @@
 <p id="progress"></p>
 
 <div id="quote-container">
-  <p>The current price is <strong><span id="price-to"></span> <span class="currency-to"></span></strong> (including <strong><span id="commission"></span></strong> <span class="currency-to"></span> for commission) for your <strong><span id="price-from"></span> <span id="currency-from"></span></strong>.</p>
+  <p id="quote-text"></p>
 </div>
