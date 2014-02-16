@@ -43,7 +43,7 @@ define([
         return false;
       } else if (amount <= 0) {
         this.alertUser("Please enter in a positive number.");
-        return false;
+        return false;x
       } else {
         this.hideAlert();
         e.preventDefault();
