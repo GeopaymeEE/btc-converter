@@ -1,4 +1,4 @@
-define(['backbone', 'underscore'], function(Backbone, _) {
+define(['backbone', 'models/OrderBook'], function(Backbone, OrderBook) {
 
   /** User model. */
   var User = Backbone.Model.extend({
@@ -8,46 +8,30 @@ define(['backbone', 'underscore'], function(Backbone, _) {
       name: "DENNIS ZHAO",
       orderBook: null,
       quote: null,
-      currPrice: null
+      order: null
     },
 
     /** Maybe pre-fetch the current BTC Price? Maybe not?... */
     initialize: function() {
+      this.set('orderBook', new OrderBook());
     },
 
-    /** Makes a request to get current Bitcoin prices.
-     *  Ok so I don't think this is even needed? */
-    getBTCPrice: function() {
-      var self = this;
-      $.ajax({
-        url: '/api/getBTCPrice',
-        type: 'GET',
-        dataType: 'json'
-      })
-      .done(function(res) {
-        self.set('currPrice', res.ask);
-      })
-      .error(function(res) {
-        console.log(res);
-        self.trigger('error:price');
-      });
+    /** Sets this User's order to ORDER. */
+    setOrder: function(order) {
+      this.set('order', order);
     },
 
     /** AJAX request to get the order book. */
-    getOrderBook: function(callback) {
+    getOrderBook: function() {
       var self = this;
-      $.ajax({
-        url: '/api/getOrderBook',
-        type: 'GET',
-        dataType: 'json'
-      })
-      .done(function(res) {
-        self.set('orderBook', res);
-        self.trigger('bookReceived');
-      })
-      .error(function(res) {
-        console.log(res);
-        self.trigger('error:book');
+      this.get('orderBook').fetch({
+        success: function(model, response) {
+          self.set('orderBook', model);
+          self.trigger('bookReceived');
+        },
+        error: function(model, response) {
+          self.trigger('error:book', response);
+        }
       });
     },
 
@@ -64,10 +48,11 @@ define(['backbone', 'underscore'], function(Backbone, _) {
      *  type: ^
      *  currency: ^
      */
-    getQuote: function(order) {
+    getQuote: function() {
       var books = this.get('orderBook');
-      var asks = books.asks;
-      var bids = books.bids;
+      var asks = books.get('asks');
+      var bids = books.get('bids');
+      var order = this.get('order');
 
       // Decrement this # until 0
       var amount = order.amount;
@@ -78,12 +63,12 @@ define(['backbone', 'underscore'], function(Backbone, _) {
         type: order.type,
         currency: order.currency
       };
-      var iter = 0;
+      var iter = 0, currAmount = 0, currValue = 0;
       if (order.type == 'buy') {
         if (order.currency == 'USD') {
           while (amount > 0) {
-            var currAmount = Number(asks[iter][1]);
-            var currValue = Number(asks[iter][0]);
+            currAmount = Number(asks[iter][1]);
+            currValue = Number(asks[iter][0]);
             if (currAmount >= amount) {
               result.amount += amount * currValue;
               break;
@@ -91,12 +76,11 @@ define(['backbone', 'underscore'], function(Backbone, _) {
               result.amount += currAmount * currValue;
               amount -= currAmount;
             }
-            console.log(result.amount);
           }
         } else if (order.currency == 'BTC') {
           while (amount > 0) {
-            var currAmount = Number(asks[iter][0]);
-            var currValue = Number(asks[iter][1]);
+            currAmount = Number(asks[iter][0]);
+            currValue = Number(asks[iter][1]);
             if (currAmount >= amount) {
               result.amount += currValue * (amount / currAmount);
               break;
@@ -111,8 +95,8 @@ define(['backbone', 'underscore'], function(Backbone, _) {
       } else if (order.type == 'sell') {
         if (order.currency == 'USD') {
           while (amount > 0) {
-            var currAmount = Number(asks[iter][0]);
-            var currValue = Number(asks[iter][1]);
+            currAmount = Number(asks[iter][0]);
+            currValue = Number(asks[iter][1]);
             if (currAmount >= amount) {
               result.amount += currValue * (amount / currAmount);
               break;
@@ -123,8 +107,8 @@ define(['backbone', 'underscore'], function(Backbone, _) {
           }
         } else if (order.currency == 'BTC') {
           while (amount > 0) {
-            var currAmount = Number(asks[iter][1]);
-            var currValue = Number(asks[iter][0]);
+            currAmount = Number(asks[iter][1]);
+            currValue = Number(asks[iter][0]);
             if (currAmount >= amount) {
               result.amount += amount * currValue;
               break;
@@ -132,7 +116,6 @@ define(['backbone', 'underscore'], function(Backbone, _) {
               result.amount += currAmount * currValue;
               amount -= currAmount;
             }
-            console.log(result.amount);
           }
         } else {
           this.trigger('error:order');
