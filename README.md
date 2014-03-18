@@ -2,7 +2,7 @@
 
 BTC to USD (and back) converter. Uses node.js, express, request, backbone.js, and Bitstamp's APIs to fetch live BTC values.
 
-I was given a 3 hour time limit to make the app, given instructions and a URL to Bitstamp's API docs! Really fun internship process although it was a little bit out of my comfort zone with regards to how other companies run their internship interview processes.
+I was given a 3 hour time limit to make the app, instructions and a URL to Bitstamp's API docs! Really fun internship process although it was a little bit out of my comfort zone with regards to how other companies run their internship interview processes.
 
 I made some important changes to the codebase, some of which I've outlined below:
 
